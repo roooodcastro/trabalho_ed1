@@ -1,0 +1,9 @@
+Trabalho sobre notação polonesa
+
+Grupo: Rodrigo Castro
+João Felipe
+Luis Vieira
+Lucas Nadalutti
+(corrijam se estiver errado isso ae)
+
+Para compilar e executar, no linux, usar gcc -o <nome_output> exemplos.c && ./<nome_output>
