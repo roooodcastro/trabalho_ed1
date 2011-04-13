@@ -76,7 +76,7 @@ int eval(char* expressao) {
 		}
 		else {
 			push(temp);
-			if (is_operador
+			//if (is_operador
 		}
 	}
 	
