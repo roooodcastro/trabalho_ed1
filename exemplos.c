@@ -2,6 +2,7 @@
 #include <string.h>
 
 
+
 char OP_FECHAR = ')';
 char OP_SOMA = '+';
 char OP_SUBTRACAO = '-';
