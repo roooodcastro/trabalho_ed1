@@ -1,0 +1,1 @@
+gcc test_ed1.c -lm -o test_ed1.test && ./test_ed1.test
