@@ -63,4 +63,35 @@ int operador(Elemento *e, char valor)
 
 }
 
+typedef struct{
+    Elemento elementos[1000];
+    int topo;
+} Lista;
 
+void construir_lista(Lista *l)
+{
+    l->topo = -1;
+}
+
+int push(Lista *l, Elemento e)
+{
+    if (l->topo < 1000) {
+        l->elementos[++(l->topo)] = e;
+        return 1;
+    }
+    return 0;
+}
+
+int pop(Lista *l, Elemento *e)
+{
+    if (l->topo > -1) {
+        *e = l->elementos[(l->topo)--];
+        return 1;
+    } 
+    return 0;
+   
+}
+
+#define IS_NUMERO(c) (c >= '0' && c <= '9')
+#define IS_LETRA(c) ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ',' || c == '.')
+#define IS_OPERADOR(c) (c == '+' || c == '-' || c == '*' || c == '/' || c == '$')
