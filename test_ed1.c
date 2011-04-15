@@ -1,13 +1,15 @@
+#include <string.h>
 #include "simplectest/tests.h"
+#include "types.h"
 #include "ed1.c"
-#include "string.h"
+
 
 int comparar_elemento(Elemento ret, Elemento esp){
     if (ret.tipo != esp.tipo) 
         return 0;
     if ((ret.tipo == 'N') && (ret.numero != esp.numero))
         return 0;
-    if ((ret.tipo == 'O') && (ret.operador != esp.operador))
+    if ((ret.operador != esp.operador))
         return 0;
     return 1;
 }
@@ -40,8 +42,8 @@ START_TEST("Struct Elemento")
     TEST("Elemento +. Com Operador aplicado a 1, 1 retorna 2");
     {
         Elemento e;
-        ASSERT(operador(&e, '+') == 1);
-        ASSERT(e.tipo == 'O');
+        ASSERT(operador(&e, '+') != 0);
+        ASSERT(e.tipo == '+');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
         ASSERT_EQUALS_FLOAT(e.operador(1, 1), 2);
     }
@@ -49,8 +51,8 @@ START_TEST("Struct Elemento")
     TEST("Elemento -. Com Operador aplicado a 1, 1 retorna 0");
     {
         Elemento e;
-        ASSERT(operador(&e, '-') == 1);
-        ASSERT(e.tipo == 'O');
+        ASSERT(operador(&e, '-') != 0);
+        ASSERT(e.tipo == '-');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
         ASSERT_EQUALS_FLOAT(e.operador(1, 1), 0);
     }
@@ -58,8 +60,8 @@ START_TEST("Struct Elemento")
     TEST("Elemento *. Com Operador aplicado a 1, 1 retorna 1");
     {
         Elemento e;
-        ASSERT(operador(&e, '*') == 1);
-        ASSERT(e.tipo == 'O');
+        ASSERT(operador(&e, '*') != 0);
+        ASSERT(e.tipo == '*');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
         ASSERT_EQUALS_FLOAT(e.operador(1, 1), 1);
     }
@@ -67,8 +69,8 @@ START_TEST("Struct Elemento")
     TEST("Elemento /. Com Operador aplicado a 1, 1 retorna 1");
     {
         Elemento e;
-        ASSERT(operador(&e, '/') == 1);
-        ASSERT(e.tipo == 'O');
+        ASSERT(operador(&e, '/') != 0);
+        ASSERT(e.tipo == '/');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
         ASSERT_EQUALS_FLOAT(e.operador(1, 1), 1);
     }
@@ -76,10 +78,10 @@ START_TEST("Struct Elemento")
     TEST("Elemento $. Com Operador aplicado a 2, 3 retorna 8");
     {
         Elemento e;
-        ASSERT(operador(&e, '$') == 1);
-        ASSERT(e.tipo == 'O');
+        ASSERT(operador(&e, '$') != 0);
+        ASSERT(e.tipo == '$');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
-        ASSERT_EQUALS_FLOAT(e.operador(3, 2), 8);
+        ASSERT_EQUALS_FLOAT(e.operador(2, 3), 8);
     }
 
     TEST("Elemento Operador 1 retorna 0");
@@ -154,37 +156,6 @@ START_TEST("IS_NUMERO");
 
 END_TEST()
 
-START_TEST("IS_LETRA");
-
-    TEST("Caracter A é letra")
-    ASSERT(IS_LETRA('A') == 1);
-    
-    TEST("Caracter B é letra")
-    ASSERT(IS_LETRA('B') == 1);
-    
-    TEST("Caracter Z é letra")
-    ASSERT(IS_LETRA('Z') == 1);
-  
-    TEST("Caracter a é letra")
-    ASSERT(IS_LETRA('a') == 1);
-
-    TEST("Caracter z é letra")
-    ASSERT(IS_LETRA('z') == 1);
-
-    TEST("Caracter y é letra")
-    ASSERT(IS_LETRA('y') == 1);
-
-    TEST("Caracter . é letra")
-    ASSERT(IS_LETRA('.') == 1);
-    
-    TEST("Caracter , é letra")
-    ASSERT(IS_LETRA(',') == 1);
-    
-    TEST("Caracter 1 NÃO é letra")
-    ASSERT(IS_LETRA('1') == 0);
-
-END_TEST()
-
 START_TEST("IS_OPERADOR")
 
     TEST("Caracter + é operador")
@@ -208,23 +179,217 @@ START_TEST("IS_OPERADOR")
 END_TEST()
 
 
-START_TEST("Converter Notação")
+START_TEST("Converter Notação Infixa para Posfixa")
 
-    TEST("1 deve retornar elemento(1, 'N')")
+    TEST("1 deve retornar e(1)")
     {
         Lista retorno;
-        
-        Elemento e;
-        numero(&e, 1);
         Lista esperado;
-        construir_lista(&esperado);
-        push(&esperado, e);
-        
-//        converter_notacao(&retorno, "1");
-//        ASSERT(comparar_lista(retorno, esperado) == 1);
+        Elemento e;
 
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 1));
+        
+        infix_to_posfix(&retorno, "1");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
+    TEST("1.5 deve retornar e(1.5)")
+    {
+        Lista retorno;
+        Lista esperado;
+        Elemento e;
+
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 1.5));
+        
+        infix_to_posfix(&retorno, "1.5");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+    TEST("2 deve retornar e(2)")
+    {
+        Lista retorno;
+        Lista esperado;
+        Elemento e;
+
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 2));
+        
+        infix_to_posfix(&retorno, "2");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+    TEST("11 deve retornar e(11)")
+    {
+        Lista retorno;
+        Lista esperado;
+        Elemento e;
+
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 11));
+        
+        infix_to_posfix(&retorno, "11");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+    TEST("(1+1) deve retornar e(1), e(1), e('+')")
+    {
+        Lista retorno;
+        Lista esperado;
+        Elemento e;
+
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *operador(&e, '+'));
+        
+        infix_to_posfix(&retorno, "(1+1)");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+    TEST("((1+1)+2) deve retornar e(1), e(1), e('+'), e(2), e('+')")
+    {
+        Lista retorno;
+        Lista esperado;
+        Elemento e;
+
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *operador(&e, '+'));
+        push(&esperado, *numero(&e, 2));
+        push(&esperado, *operador(&e, '+'));
+        
+        infix_to_posfix(&retorno, "((1+1)+2)");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+    TEST("(1+(1+2)) deve retornar e(1), e(1), e(2), e('+'), e('+')")
+    {
+        Lista retorno;
+        Lista esperado;
+        Elemento e;
+
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *numero(&e, 2));
+        push(&esperado, *operador(&e, '+'));
+        push(&esperado, *operador(&e, '+'));
+        
+        infix_to_posfix(&retorno, "(1+(1+2))");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+    TEST("((4-((1*(1+2))/3))$2) deve retornar e(4), e(1), e(1), e(2), e('+'), e('*'), e(3), e('/'), e(2), e($)")
+    {
+        Lista retorno;
+        Lista esperado;
+        Elemento e;
+
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 4));
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *numero(&e, 2));
+        push(&esperado, *operador(&e, '+'));
+        push(&esperado, *operador(&e, '*'));
+        push(&esperado, *numero(&e, 3));
+        push(&esperado, *operador(&e, '/'));
+        push(&esperado, *operador(&e, '-'));
+        push(&esperado, *numero(&e, 2));
+        push(&esperado, *operador(&e, '$'));
+        
+        infix_to_posfix(&retorno, "((4-((1*(1+2))/3))$2)");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+
+    TEST("'(1 + 1)', '     (1+1)    ', '     (    1    +    1    )   '  devem retornar e(1), e(1), e('+')")
+    {
+        Lista retorno;
+        Lista esperado;
+        Elemento e;
+
+        construir_lista(&esperado);
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *numero(&e, 1));
+        push(&esperado, *operador(&e, '+'));
+        
+        infix_to_posfix(&retorno, "(1 + 1)");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+        infix_to_posfix(&retorno, "     (1+1)    ");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+        infix_to_posfix(&retorno, "     (    1    +    1    )   ");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+END_TEST()
+
+START_TEST("Eval Posfix")
+    
+    TEST("e(1) deve retornar 1")
+    {
+        Lista posfix;
+        Elemento e;
+
+        construir_lista(&posfix);
+        push(&posfix, *numero(&e, 1));
+        
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 1);
+    }
+
+    TEST("e(1), e(1), e('+') deve retornar 2")
+    {
+        Lista posfix;
+        Elemento e;
+
+
+        construir_lista(&posfix);
+        push(&posfix, *numero(&e, 1));
+        push(&posfix, *numero(&e, 1));
+        push(&posfix, *operador(&e, '+'));
+        
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 2);
+    }
+
+    TEST("e(1), e(1), e(2), e('+'), e('+') deve retornar 4")
+    {
+        Lista posfix;
+        Elemento e;
+
+
+        construir_lista(&posfix);
+        push(&posfix, *numero(&e, 1));
+        push(&posfix, *numero(&e, 1));
+        push(&posfix, *numero(&e, 2));
+        push(&posfix, *operador(&e, '+'));
+        push(&posfix, *operador(&e, '+'));
+        
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 4);
+    }
+
+    TEST("((4-((1*(1+2))/3))$2) deve retornar 9")
+    {
+        Lista posfix;
+        infix_to_posfix(&posfix, "((4-((1*(1+2))/3))$2)");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 9);
+    }
+
+    TEST("(1.5+1.5) deve retornar 3")
+    {
+        Lista posfix;
+        infix_to_posfix(&posfix, "(1.5+1.5)");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 3);
+    }
+
+    TEST("(6/2) deve retornar 3")
+    {
+        Lista posfix;
+        infix_to_posfix(&posfix, "(6/2)");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 3);
+    }
 END_TEST()
 
 END_TESTS()
