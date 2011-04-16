@@ -1,7 +1,9 @@
 #include <string.h>
 #include "simplectest/tests.h"
-#include "types.h"
-#include "ed1.c"
+#include "elemento.c"
+#include "lista.c"
+#include "posfix.c"
+
 
 
 int comparar_elemento(Elemento ret, Elemento esp){
@@ -94,7 +96,7 @@ START_TEST("Struct Elemento")
 
 END_TEST()
 
-START_TEST("Lista")
+START_TEST("Lista e Pilha")
 
     TEST("Lista Vazia");
     {
@@ -133,6 +135,76 @@ START_TEST("Lista")
 
         TEST("Pop em lista vazia retorna 0");
         ASSERT(pop(&l, &e) == 0);
+    }
+
+    TEST("Append");
+    {
+        Lista l;
+        Elemento e;
+        construir_lista(&l);
+        TEST("Append elemento 1 no final da lista")
+        ASSERT(append(&l, *numero(&e, 1), -1) == 1);
+        ASSERT(l.topo == 0);
+        ASSERT(l.elementos[0].numero == 1);
+        
+        TEST("Append elemento 2 no final da lista")
+        ASSERT(append(&l, *numero(&e, 2), -1) == 1);
+        ASSERT(l.topo == 1);
+        ASSERT(l.elementos[0].numero == 1);
+        ASSERT(l.elementos[1].numero == 2);
+
+        TEST("Append elemento 3 no inicio da lista")
+        ASSERT(append(&l, *numero(&e, 3), 0) == 1);
+        ASSERT(l.topo == 2);
+        ASSERT(l.elementos[0].numero == 3);
+        ASSERT(l.elementos[1].numero == 1);
+        ASSERT(l.elementos[2].numero == 2);
+
+        TEST("Append elemento 4 no inicio da lista")
+        ASSERT(append(&l, *numero(&e, 4), 0) == 1);
+        ASSERT(l.topo == 3);
+        ASSERT(l.elementos[0].numero == 4);
+        ASSERT(l.elementos[1].numero == 3);
+        ASSERT(l.elementos[2].numero == 1);
+        ASSERT(l.elementos[3].numero == 2);
+
+        TEST("Append elemento 5 na posicao 1 da lista")
+        ASSERT(append(&l, *numero(&e, 5), 1) == 1);
+        ASSERT(l.topo == 4);
+        ASSERT(l.elementos[0].numero == 4);
+        ASSERT(l.elementos[1].numero == 5);
+        ASSERT(l.elementos[2].numero == 3);
+        ASSERT(l.elementos[3].numero == 1);
+        ASSERT(l.elementos[4].numero == 2);
+
+        TEST("Append elemento 6 na posicao 4 da lista")
+        ASSERT(append(&l, *numero(&e, 6), 4) == 1);
+        ASSERT(l.topo == 5);
+        ASSERT(l.elementos[0].numero == 4);
+        ASSERT(l.elementos[1].numero == 5);
+        ASSERT(l.elementos[2].numero == 3);
+        ASSERT(l.elementos[3].numero == 1);
+        ASSERT(l.elementos[4].numero == 6);
+        ASSERT(l.elementos[5].numero == 2);
+
+        TEST("Append elemento 7 na posicao 6 da lista")
+        ASSERT(append(&l, *numero(&e, 7), 6) == 1);
+        ASSERT(l.topo == 6);
+        ASSERT(l.elementos[0].numero == 4);
+        ASSERT(l.elementos[1].numero == 5);
+        ASSERT(l.elementos[2].numero == 3);
+        ASSERT(l.elementos[3].numero == 1);
+        ASSERT(l.elementos[4].numero == 6);
+        ASSERT(l.elementos[5].numero == 2);
+        ASSERT(l.elementos[6].numero == 7);
+
+        TEST("Append elemento 8 na posicao 8 da lista deve falhar")
+        ASSERT(append(&l, *numero(&e, 8), 8) == 0);
+        ASSERT(l.topo == 6);
+        
+        TEST("Append elemento 9 na posicao -2 da lista deve falhar")
+        ASSERT(append(&l, *numero(&e, 9), -2) == 0);
+        ASSERT(l.topo == 6);
     }
 
 END_TEST()
