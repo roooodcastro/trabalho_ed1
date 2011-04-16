@@ -29,10 +29,14 @@ int pop(Pilha *p, Elemento *e)
     return 0;
 }
 
-int append(Lista *l, Elemento e, int pos)
+int append(Lista *l, Elemento e)
 {
+    return add(l, e, -1);  
+}
+
+int add(Lista *l, Elemento e, int pos){
     int i;
-    if (pos > l->topo+1 || pos > 999 || pos < -1)
+    if (pos > l->topo+1 || pos > 999 || pos < -1 || l->topo == 999)
         return 0;
     if (pos == -1)
         l->elementos[++(l->topo)] = e;
@@ -43,8 +47,21 @@ int append(Lista *l, Elemento e, int pos)
         l->elementos[pos] = e;
         l->topo++;
     }
-    return 1;
+    return 1;    
 }
+
+int addv(Lista *l, float valor, int pos){
+    Elemento e;    
+    add(l, *numero(&e, valor), pos);
+    return e.numero;
+}
+
+int addo(Lista *l, char valor, int pos){
+    Elemento e;    
+    add(l, *operador(&e, valor), pos);
+    return e.tipo;
+}
+
 
 float popv(Pilha *temp){
     Elemento e;
@@ -57,6 +74,9 @@ float pushv(Pilha *temp, float valor){
     push(temp, *numero(&e, valor));
     return e.numero;
 }
+
+
+
 
 //void mostrar_lista(Lista *l){
 //    int i = 0;

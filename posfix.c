@@ -31,7 +31,7 @@ Lista *infix_to_posfix(Lista *l, char *infixa)
             if (operador(&e, infixa[i])) 
                 push(&pilha, e);
     	    else if (infixa[i] == ')' && pop(&pilha, &e))
-                append(l, e, -1);
+                append(l, e);
 	    }
 
 	    i++;
@@ -53,4 +53,28 @@ float eval_posfix(Lista l)
             pushv(&pilha, l.elementos[i].operador(popv(&pilha), popv(&pilha)));
     } 
     return popv(&pilha);
+}
+
+Lista *posfix_to_posfix(Lista *l, char *posfixa)
+{
+    char aux[255];
+    sprintf(aux, "");
+
+    construir_lista(l);
+	int i = 0;
+	do {
+	    if (IS_NUMERO(posfixa[i]))                
+            sprintf(aux, "%s%c", aux, posfixa[i]);
+	    else {
+            Elemento e;	  
+            if (strlen(aux)){
+                push(l, *numero(&e, stof(aux))); 
+                sprintf(aux, "");
+            }
+            if (operador(&e, posfixa[i])) 
+                append(l, e);
+	    }
+	    i++;
+	} while (posfixa[i-1] != '\0');
+    return l;
 }

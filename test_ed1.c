@@ -31,19 +31,17 @@ int comparar_lista(Lista retorno, Lista esperado){
 START_TESTS()
 
 START_TEST("Struct Elemento")
-
+{
+    Elemento e;
     TEST("Elemento 1");
     {
-        Elemento e;
         numero(&e, 1);
         ASSERT(e.tipo == 'N');
         ASSERT_EQUALS_FLOAT(e.numero, 1);
-//        ASSERT_EQUALS_FLOAT(e.operador, '\0');
     }
 
     TEST("Elemento +. Com Operador aplicado a 1, 1 retorna 2");
     {
-        Elemento e;
         ASSERT(operador(&e, '+') != 0);
         ASSERT(e.tipo == '+');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
@@ -52,7 +50,6 @@ START_TEST("Struct Elemento")
 
     TEST("Elemento -. Com Operador aplicado a 1, 1 retorna 0");
     {
-        Elemento e;
         ASSERT(operador(&e, '-') != 0);
         ASSERT(e.tipo == '-');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
@@ -61,7 +58,6 @@ START_TEST("Struct Elemento")
 
     TEST("Elemento *. Com Operador aplicado a 1, 1 retorna 1");
     {
-        Elemento e;
         ASSERT(operador(&e, '*') != 0);
         ASSERT(e.tipo == '*');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
@@ -70,7 +66,6 @@ START_TEST("Struct Elemento")
 
     TEST("Elemento /. Com Operador aplicado a 1, 1 retorna 1");
     {
-        Elemento e;
         ASSERT(operador(&e, '/') != 0);
         ASSERT(e.tipo == '/');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
@@ -79,7 +74,6 @@ START_TEST("Struct Elemento")
 
     TEST("Elemento $. Com Operador aplicado a 2, 3 retorna 8");
     {
-        Elemento e;
         ASSERT(operador(&e, '$') != 0);
         ASSERT(e.tipo == '$');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
@@ -88,15 +82,17 @@ START_TEST("Struct Elemento")
 
     TEST("Elemento Operador 1 retorna 0");
     {
-        Elemento e;
         ASSERT(operador(&e, '1') == 0);
         ASSERT(e.tipo == '?');
         ASSERT_EQUALS_FLOAT(e.numero, 0);
     }
-
+}
 END_TEST()
 
 START_TEST("Lista e Pilha")
+{
+    
+    Elemento e;
 
     TEST("Lista Vazia");
     {
@@ -107,88 +103,56 @@ START_TEST("Lista e Pilha")
 
     TEST("Push e Pop");
     {
-        Lista l;
-        Elemento e;
-        construir_lista(&l);
-        TEST("Push 1 em lista Vazia");
-        numero(&e, 1);
-        ASSERT(push(&l, e) == 1);
-        ASSERT(l.topo == 0);
-        ASSERT(l.elementos[0].numero == 1);
-        
-        TEST("Push 2 em lista que contem 1");
-        numero(&e, 2);
-        ASSERT(push(&l, e) == 1);
-        ASSERT(l.topo == 1);
-        ASSERT(l.elementos[0].numero == 1);
-        ASSERT(l.elementos[1].numero == 2);
+        Pilha p; 
+        construir_lista(&p);
+        int passa = 1;
+        int i = 0;
 
-        TEST("Pop em lista que contem 1 2 retorna 2");
-        pop(&l, &e);
-        ASSERT(l.topo == 0);
-        ASSERT(e.numero == 2);
+        TEST("Adicionar 1000 elementos a pilha");
+        passa = 1;        
+        for (i = 1; i <= 1000; i++){
+            passa &= (push(&p, *numero(&e, i)) == 1) && (p.topo == i-1);
+        }       
+        ASSERT(passa == 1);
 
-        TEST("Pop em lista que contem 1 retorna 1");
-        pop(&l, &e);
-        ASSERT(l.topo == -1);
-        ASSERT(e.numero == 1);
+        TEST("Remover 1000 elementos da pilha");
+        passa = 1;        
+        for (i = 1000; i >= 1; i--){
+            passa &= (pop(&p, &e) == 1) && (p.topo == i-2) && (e.numero == i);
+        }       
+        ASSERT(passa == 1);
 
         TEST("Pop em lista vazia retorna 0");
-        ASSERT(pop(&l, &e) == 0);
+        ASSERT(pop(&p, &e) == 0);
     }
 
-    TEST("Append");
+    TEST("Add");
     {
         Lista l;
         Elemento e;
+        int i = 0;
+        int passa = 1;
+
         construir_lista(&l);
-        TEST("Append elemento 1 no final da lista")
-        ASSERT(append(&l, *numero(&e, 1), -1) == 1);
-        ASSERT(l.topo == 0);
-        ASSERT(l.elementos[0].numero == 1);
-        
-        TEST("Append elemento 2 no final da lista")
-        ASSERT(append(&l, *numero(&e, 2), -1) == 1);
-        ASSERT(l.topo == 1);
-        ASSERT(l.elementos[0].numero == 1);
-        ASSERT(l.elementos[1].numero == 2);
+        TEST("Adicionar 1000 elementos a lista");
+        passa = 1;
+        for (i = 1; i <= 1000; i++){
+            passa &= (add(&l, *numero(&e, i), -1) == 1) && (l.topo == i-1) && (l.elementos[i-1].numero == i);
+        }       
+        ASSERT(passa == 1);
+       
+        TEST("Adicionar elemento em lista lotada");
+        ASSERT(add(&l, *numero(&e, 1001), -1) == 0);
 
-        TEST("Append elemento 3 no inicio da lista")
-        ASSERT(append(&l, *numero(&e, 3), 0) == 1);
-        ASSERT(l.topo == 2);
-        ASSERT(l.elementos[0].numero == 3);
-        ASSERT(l.elementos[1].numero == 1);
-        ASSERT(l.elementos[2].numero == 2);
+        construir_lista(&l);
 
-        TEST("Append elemento 4 no inicio da lista")
-        ASSERT(append(&l, *numero(&e, 4), 0) == 1);
-        ASSERT(l.topo == 3);
-        ASSERT(l.elementos[0].numero == 4);
-        ASSERT(l.elementos[1].numero == 3);
-        ASSERT(l.elementos[2].numero == 1);
-        ASSERT(l.elementos[3].numero == 2);
-
-        TEST("Append elemento 5 na posicao 1 da lista")
-        ASSERT(append(&l, *numero(&e, 5), 1) == 1);
-        ASSERT(l.topo == 4);
-        ASSERT(l.elementos[0].numero == 4);
-        ASSERT(l.elementos[1].numero == 5);
-        ASSERT(l.elementos[2].numero == 3);
-        ASSERT(l.elementos[3].numero == 1);
-        ASSERT(l.elementos[4].numero == 2);
-
-        TEST("Append elemento 6 na posicao 4 da lista")
-        ASSERT(append(&l, *numero(&e, 6), 4) == 1);
-        ASSERT(l.topo == 5);
-        ASSERT(l.elementos[0].numero == 4);
-        ASSERT(l.elementos[1].numero == 5);
-        ASSERT(l.elementos[2].numero == 3);
-        ASSERT(l.elementos[3].numero == 1);
-        ASSERT(l.elementos[4].numero == 6);
-        ASSERT(l.elementos[5].numero == 2);
-
-        TEST("Append elemento 7 na posicao 6 da lista")
-        ASSERT(append(&l, *numero(&e, 7), 6) == 1);
+        TEST("Adicionar elementos na ordem -1 -1 0 0 1 4 6")
+        int posicoes[] = {-1, -1, 0, 0, 1, 4, 6};
+        passa = 1;
+        for (i = 0; i < 7; i++){
+            passa &= (add(&l, *numero(&e, i+1), posicoes[i]) == 1) && (l.topo == i);
+        }        
+        ASSERT(passa == 1);
         ASSERT(l.topo == 6);
         ASSERT(l.elementos[0].numero == 4);
         ASSERT(l.elementos[1].numero == 5);
@@ -199,180 +163,130 @@ START_TEST("Lista e Pilha")
         ASSERT(l.elementos[6].numero == 7);
 
         TEST("Append elemento 8 na posicao 8 da lista deve falhar")
-        ASSERT(append(&l, *numero(&e, 8), 8) == 0);
+        ASSERT(add(&l, *numero(&e, 8), 8) == 0);
         ASSERT(l.topo == 6);
         
         TEST("Append elemento 9 na posicao -2 da lista deve falhar")
-        ASSERT(append(&l, *numero(&e, 9), -2) == 0);
+        ASSERT(add(&l, *numero(&e, 9), -2) == 0);
         ASSERT(l.topo == 6);
     }
-
+}
 END_TEST()
 
 START_TEST("IS_NUMERO");
+{
+    TEST("Caracteres 0..9 são numeros")    
+    char i;
+    for (i = '0'; i <= '9'; i++){     
+        ASSERT(IS_NUMERO(i) == 1);
+    }
 
-    TEST("Caracter 1 é número")
-    ASSERT(IS_NUMERO('1') == 1);
-    
-    TEST("Caracter 2 é número")
-    ASSERT(IS_NUMERO('2') == 1);
-    
-    TEST("Caracter 9 é número")
-    ASSERT(IS_NUMERO('9') == 1);
-  
-    TEST("Caracter 0 é número")
-    ASSERT(IS_NUMERO('0') == 1);
-    
     TEST("Caracter A NÃO é número")
     ASSERT(IS_NUMERO('A') == 0);
-
+}
 END_TEST()
 
 START_TEST("IS_OPERADOR")
-
-    TEST("Caracter + é operador")
-    ASSERT(IS_OPERADOR('+') == 1);
-
-    TEST("Caracter - é operador")
-    ASSERT(IS_OPERADOR('-') == 1);
-
-    TEST("Caracter * é operador")
-    ASSERT(IS_OPERADOR('*') == 1);
-
-    TEST("Caracter / é operador")
-    ASSERT(IS_OPERADOR('/') == 1);
-
-    TEST("Caracter $ é operador")
-    ASSERT(IS_OPERADOR('$') == 1);
-
+{
+    TEST("Caracteres +-*/$ são operadores")    
+    int i;
+    char op[] = "+-*/$";
+    for (i = 0; op[i] != '\0'; i++){     
+        ASSERT(IS_OPERADOR(op[i]) == 1);
+    }
+ 
     TEST("Caracter A não é operador")
     ASSERT(IS_OPERADOR('A') == 0);
-
+}
 END_TEST()
 
 
 START_TEST("Converter Notação Infixa para Posfixa")
+{    
+    Lista retorno;
+    Lista esperado;
+    Elemento e;
 
     TEST("1 deve retornar e(1)")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 1));
-        
+        addv(&esperado, 1, -1);
         infix_to_posfix(&retorno, "1");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("1.5 deve retornar e(1.5)")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 1.5));
-        
+        addv(&esperado, 1.5, -1);
         infix_to_posfix(&retorno, "1.5");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("2 deve retornar e(2)")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 2));
-        
+        addv(&esperado, 2, -1);
         infix_to_posfix(&retorno, "2");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("11 deve retornar e(11)")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 11));
-        
+        addv(&esperado, 11, -1);
         infix_to_posfix(&retorno, "11");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("(1+1) deve retornar e(1), e(1), e('+')")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *operador(&e, '+'));
-        
+        addv(&esperado, 1, -1);
+        addv(&esperado, 1, -1);
+        addo(&esperado, '+', -1);
         infix_to_posfix(&retorno, "(1+1)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("((1+1)+2) deve retornar e(1), e(1), e('+'), e(2), e('+')")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *operador(&e, '+'));
-        push(&esperado, *numero(&e, 2));
-        push(&esperado, *operador(&e, '+'));
-        
+        addv(&esperado, 1, -1);
+        addv(&esperado, 1, -1);
+        addo(&esperado, '+', -1);
+        addv(&esperado, 2, -1);
+        addo(&esperado, '+', -1);
         infix_to_posfix(&retorno, "((1+1)+2)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("(1+(1+2)) deve retornar e(1), e(1), e(2), e('+'), e('+')")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *numero(&e, 2));
-        push(&esperado, *operador(&e, '+'));
-        push(&esperado, *operador(&e, '+'));
-        
+        addv(&esperado, 1, -1);
+        addv(&esperado, 1, -1);
+        addv(&esperado, 2, -1);
+        addo(&esperado, '+', -1);
+        addo(&esperado, '+', -1);
         infix_to_posfix(&retorno, "(1+(1+2))");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("((4-((1*(1+2))/3))$2) deve retornar e(4), e(1), e(1), e(2), e('+'), e('*'), e(3), e('/'), e(2), e($)")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 4));
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *numero(&e, 2));
-        push(&esperado, *operador(&e, '+'));
-        push(&esperado, *operador(&e, '*'));
-        push(&esperado, *numero(&e, 3));
-        push(&esperado, *operador(&e, '/'));
-        push(&esperado, *operador(&e, '-'));
-        push(&esperado, *numero(&e, 2));
-        push(&esperado, *operador(&e, '$'));
-        
+        addv(&esperado, 4, -1);
+        addv(&esperado, 1, -1);
+        addv(&esperado, 1, -1);
+        addv(&esperado, 2, -1);
+        addo(&esperado, '+', -1);
+        addo(&esperado, '*', -1);
+        addv(&esperado, 3, -1);
+        addo(&esperado, '/', -1);
+        addo(&esperado, '-', -1);
+        addv(&esperado, 2, -1);
+        addo(&esperado, '$', -1);
         infix_to_posfix(&retorno, "((4-((1*(1+2))/3))$2)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
@@ -380,15 +294,10 @@ START_TEST("Converter Notação Infixa para Posfixa")
 
     TEST("'(1 + 1)', '     (1+1)    ', '     (    1    +    1    )   '  devem retornar e(1), e(1), e('+')")
     {
-        Lista retorno;
-        Lista esperado;
-        Elemento e;
-
         construir_lista(&esperado);
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *numero(&e, 1));
-        push(&esperado, *operador(&e, '+'));
-        
+        addv(&esperado, 1, -1);
+        addv(&esperado, 1, -1);
+        addo(&esperado, '+', -1);
         infix_to_posfix(&retorno, "(1 + 1)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
         infix_to_posfix(&retorno, "     (1+1)    ");
@@ -396,72 +305,79 @@ START_TEST("Converter Notação Infixa para Posfixa")
         infix_to_posfix(&retorno, "     (    1    +    1    )   ");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
-
+}
 END_TEST()
 
 START_TEST("Eval Posfix")
-    
+{    
+    Lista posfix;
+
     TEST("e(1) deve retornar 1")
     {
-        Lista posfix;
-        Elemento e;
-
-        construir_lista(&posfix);
-        push(&posfix, *numero(&e, 1));
-        
+        posfix = *posfix_to_posfix(&posfix, "1");
         ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 1);
     }
 
+    
     TEST("e(1), e(1), e('+') deve retornar 2")
     {
-        Lista posfix;
-        Elemento e;
-
-
-        construir_lista(&posfix);
-        push(&posfix, *numero(&e, 1));
-        push(&posfix, *numero(&e, 1));
-        push(&posfix, *operador(&e, '+'));
-        
+        posfix = *posfix_to_posfix(&posfix, "1 1 +");
         ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 2);
     }
 
     TEST("e(1), e(1), e(2), e('+'), e('+') deve retornar 4")
-    {
-        Lista posfix;
-        Elemento e;
-
-
-        construir_lista(&posfix);
-        push(&posfix, *numero(&e, 1));
-        push(&posfix, *numero(&e, 1));
-        push(&posfix, *numero(&e, 2));
-        push(&posfix, *operador(&e, '+'));
-        push(&posfix, *operador(&e, '+'));
-        
+    {    
+        posfix = *posfix_to_posfix(&posfix, "1 1 2 + +");
         ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 4);
     }
 
     TEST("((4-((1*(1+2))/3))$2) deve retornar 9")
     {
-        Lista posfix;
-        infix_to_posfix(&posfix, "((4-((1*(1+2))/3))$2)");
+        posfix = *infix_to_posfix(&posfix, "((4-((1*(1+2))/3))$2)");
         ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 9);
     }
 
     TEST("(1.5+1.5) deve retornar 3")
     {
-        Lista posfix;
-        infix_to_posfix(&posfix, "(1.5+1.5)");
+        posfix = *infix_to_posfix(&posfix, "(1.5+1.5)");
         ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 3);
     }
-
+    
     TEST("(6/2) deve retornar 3")
     {
-        Lista posfix;
-        infix_to_posfix(&posfix, "(6/2)");
+        posfix = *infix_to_posfix(&posfix, "(6/2)");
         ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 3);
     }
+}
+END_TEST()
+
+START_TEST("Posfix para Posfix") 
+{
+    Lista retorno;
+    Lista esperado;
+
+    TEST("'1 1 +' deve retornar e(1), e(1), e('+')")
+    {
+        retorno = *posfix_to_posfix(&retorno, "1 1 +");
+        esperado = *infix_to_posfix(&esperado, "(1+1)");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+    TEST("'1 1+' deve retornar e(1), e(1), e(+)")
+    {
+        retorno = *posfix_to_posfix(&retorno, "1 1+");
+        esperado = *infix_to_posfix(&esperado, "(1+1)");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+    TEST("'    2    1    1+-' deve retornar e(2), e(1), e(1), e(+), e(-)")
+    {
+        retorno = *posfix_to_posfix(&retorno, "     2    1    1+-"); 
+        esperado = *infix_to_posfix(&esperado, "(2-(1+1))");
+        ASSERT(comparar_lista(retorno, esperado) == 1);
+    }
+
+}
 END_TEST()
 
 END_TESTS()
