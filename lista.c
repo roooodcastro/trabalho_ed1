@@ -1,40 +1,16 @@
 #include "lista.h"
 
-void construir_lista(Lista *l)
-{
+
+//Funcoes de Lista
+void construir_lista(Lista *l) {
     l->topo = -1;
 }
 
-void construir_pilha(Pilha *p)
-{
-    p->topo = -1;
+int append(Lista *l, Elemento e) {
+    return insert(l, e, -1);  
 }
 
-int push(Pilha *p, Elemento e)
-{
-    if (p->topo < 999) {
-        p->elementos[++(p->topo)] = e;
-        return 1;
-    }
-    return 0;
-}
-
-
-int pop(Pilha *p, Elemento *e)
-{
-    if (p->topo > -1) {
-        *e = p->elementos[(p->topo)--];
-        return 1;
-    } 
-    return 0;
-}
-
-int append(Lista *l, Elemento e)
-{
-    return add(l, e, -1);  
-}
-
-int add(Lista *l, Elemento e, int pos){
+int insert(Lista *l, Elemento e, int pos){
     int i;
     if (pos > l->topo+1 || pos > 999 || pos < -1 || l->topo == 999)
         return 0;
@@ -50,23 +26,30 @@ int add(Lista *l, Elemento e, int pos){
     return 1;    
 }
 
-int addv(Lista *l, float valor, int pos){
+int insertv(Lista *l, float valor, int pos){
     Elemento e;    
-    add(l, *numero(&e, valor), pos);
+    insert(l, *numero(&e, valor), pos);
     return e.numero;
 }
 
-int addo(Lista *l, char valor, int pos){
+int inserto(Lista *l, char valor, int pos){
     Elemento e;    
-    add(l, *operador(&e, valor), pos);
+    insert(l, *operador(&e, valor), pos);
     return e.tipo;
 }
 
 
-float popv(Pilha *temp){
-    Elemento e;
-    pop(temp, &e);
-    return e.numero;
+//Funcoes de Pilha
+void construir_pilha(Pilha *p) {
+    p->topo = -1;
+}
+
+int push(Pilha *p, Elemento e) {
+    if (p->topo < 999) {
+        p->elementos[++(p->topo)] = e;
+        return 1;
+    }
+    return 0;
 }
 
 float pushv(Pilha *temp, float valor){
@@ -75,15 +58,16 @@ float pushv(Pilha *temp, float valor){
     return e.numero;
 }
 
+int pop(Pilha *p, Elemento *e) {
+    if (p->topo > -1) {
+        *e = p->elementos[(p->topo)--];
+        return 1;
+    } 
+    return 0;
+}
 
-
-
-//void mostrar_lista(Lista *l){
-//    int i = 0;
-//    for (i = 0; i <= l->topo; i++){
-//        if (l->elementos[i].tipo == 'N')
-//            printf("%.2f ", l->elementos[i].numero);
-//        else
-//            printf("%c ", l->elementos[i].tipo);
-//    }
-//}
+float popv(Pilha *temp){
+    Elemento e;
+    pop(temp, &e);
+    return e.numero;
+}

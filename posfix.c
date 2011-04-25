@@ -1,14 +1,14 @@
 #include <string.h>
 #include "posfix.h"
 
-float stof(char *text)
+float stof(char *str)
 {
-    float valor;
-    sscanf(text, "%f", &valor); 
-    return valor;
+    float rfloat;
+    sscanf(str, "%f", &rfloat); 
+    return rfloat;
 }
 
-Lista *infix_to_posfix(Lista *l, char *infixa)
+Lista* infix_to_posfix(Lista *l, char *infixa)
 {
     char aux[255];
     sprintf(aux, "");
@@ -55,7 +55,7 @@ float eval_posfix(Lista l)
     return popv(&pilha);
 }
 
-Lista *posfix_to_posfix(Lista *l, char *posfixa)
+Lista* posfix_to_posfix(Lista *l, char *posfixa)
 {
     char aux[255];
     sprintf(aux, "");

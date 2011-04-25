@@ -26,6 +26,7 @@ Elemento *numero(Elemento *e, float valor)
     e->numero = valor;
     e->tipo = 'N';
     e->operador = '\0';
+    
     return e;
 }
 
@@ -33,6 +34,7 @@ Elemento *operador(Elemento *e, char valor)
 {
     e->numero = 0;
     e->tipo = valor;
+    
     switch (valor){
         case '+':
             e->operador = soma; 
@@ -53,7 +55,6 @@ Elemento *operador(Elemento *e, char valor)
             e->tipo = '?';
             return 0;
     }
-    return e;
     
-
+    return e;
 }
