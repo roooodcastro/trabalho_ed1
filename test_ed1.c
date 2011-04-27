@@ -206,14 +206,12 @@ START_TEST("Converter Notação Infixa para Posfixa")
     Lista retorno;
     Lista esperado;
     Elemento e;
-    int func;
 
     TEST("1 deve retornar e(1)")
     {
         construir_lista(&esperado);
         addv(&esperado, 1, -1);
-        func = 0;
-        infix_to_posfix(&retorno, "1", &func);
+        infix_to_posfix(&retorno, "1");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
@@ -221,8 +219,7 @@ START_TEST("Converter Notação Infixa para Posfixa")
     {
         construir_lista(&esperado);
         addv(&esperado, 1.5, -1);
-        func = 0;
-        infix_to_posfix(&retorno, "1.5", &func);
+        infix_to_posfix(&retorno, "1.5");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
@@ -230,8 +227,7 @@ START_TEST("Converter Notação Infixa para Posfixa")
     {
         construir_lista(&esperado);
         addv(&esperado, 2, -1);
-        func = 0;
-        infix_to_posfix(&retorno, "2", &func);
+        infix_to_posfix(&retorno, "2");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
@@ -239,8 +235,7 @@ START_TEST("Converter Notação Infixa para Posfixa")
     {
         construir_lista(&esperado);
         addv(&esperado, 11, -1);
-        func = 0;
-        infix_to_posfix(&retorno, "11", &func);
+        infix_to_posfix(&retorno, "11");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
@@ -250,8 +245,7 @@ START_TEST("Converter Notação Infixa para Posfixa")
         addv(&esperado, 1, -1);
         addv(&esperado, 1, -1);
         addo(&esperado, '+', -1);
-        func = 0;
-        infix_to_posfix(&retorno, "(1+1)", &func);
+        infix_to_posfix(&retorno, "(1+1)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
@@ -263,8 +257,7 @@ START_TEST("Converter Notação Infixa para Posfixa")
         addo(&esperado, '+', -1);
         addv(&esperado, 2, -1);
         addo(&esperado, '+', -1);
-        func = 0;
-        infix_to_posfix(&retorno, "((1+1)+2)", &func);
+        infix_to_posfix(&retorno, "((1+1)+2)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
@@ -276,8 +269,7 @@ START_TEST("Converter Notação Infixa para Posfixa")
         addv(&esperado, 2, -1);
         addo(&esperado, '+', -1);
         addo(&esperado, '+', -1);
-        func = 0;
-        infix_to_posfix(&retorno, "(1+(1+2))", &func);
+        infix_to_posfix(&retorno, "(1+(1+2))");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
@@ -295,8 +287,7 @@ START_TEST("Converter Notação Infixa para Posfixa")
         addo(&esperado, '-', -1);
         addv(&esperado, 2, -1);
         addo(&esperado, '$', -1);
-        func = 0;
-        infix_to_posfix(&retorno, "((4-((1*(1+2))/3))$2)", &func);
+        infix_to_posfix(&retorno, "((4-((1*(1+2))/3))$2)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
@@ -307,14 +298,11 @@ START_TEST("Converter Notação Infixa para Posfixa")
         addv(&esperado, 1, -1);
         addv(&esperado, 1, -1);
         addo(&esperado, '+', -1);
-        func = 0;
-        infix_to_posfix(&retorno, "(1 + 1)",&func);
+        infix_to_posfix(&retorno, "(1 + 1)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
-        func = 0;
-        infix_to_posfix(&retorno, "     (1+1)    ", &func);
+        infix_to_posfix(&retorno, "     (1+1)    ");
         ASSERT(comparar_lista(retorno, esperado) == 1);
-        func = 0;
-        infix_to_posfix(&retorno, "     (    1    +    1    )   ", &func);
+        infix_to_posfix(&retorno, "     (    1    +    1    )   ");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 }
@@ -323,63 +311,54 @@ END_TEST()
 START_TEST("Eval Posfix")
 {    
     Lista posfix;
-    int func;
 
     TEST("e(1) deve retornar 1")
     {
-        func = 0;
-        posfix = *posfix_to_posfix(&posfix, "1", &func);
-        ASSERT_EQUALS_FLOAT(eval_posfix(posfix, &func), 1);
+        posfix = *posfix_to_posfix(&posfix, "1");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 1);
     }
 
     
     TEST("e(1), e(1), e('+') deve retornar 2")
     {
-        func = 0;
-        posfix = *posfix_to_posfix(&posfix, "1 1 +", &func);
-        ASSERT_EQUALS_FLOAT(eval_posfix(posfix, &func), 2);
+        posfix = *posfix_to_posfix(&posfix, "1 1 +");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 2);
     }
 
     TEST("e(1), e(1), e(2), e('+'), e('+') deve retornar 4")
     {    
-        func = 0;
-        posfix = *posfix_to_posfix(&posfix, "1 1 2 + +", &func);
-        ASSERT_EQUALS_FLOAT(eval_posfix(posfix, &func), 4);
+        posfix = *posfix_to_posfix(&posfix, "1 1 2 + +");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 4);
     }
 
     TEST("((4-((1*(1+2))/3))$2) deve retornar 9")
     {
-        func = 0;
-        posfix = *infix_to_posfix(&posfix, "((4-((1*(1+2))/3))$2)", &func);
-        ASSERT_EQUALS_FLOAT(eval_posfix(posfix, &func), 9);
+        posfix = *infix_to_posfix(&posfix, "((4-((1*(1+2))/3))$2)");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 9);
     }
 
     TEST("(1.5+1.5) deve retornar 3")
     {
-        func = 0;
-        posfix = *infix_to_posfix(&posfix, "(1.5+1.5)", &func);
-        ASSERT_EQUALS_FLOAT(eval_posfix(posfix, &func), 3);
+        posfix = *infix_to_posfix(&posfix, "(1.5+1.5)");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 3);
     }
     
     TEST("(6/2) deve retornar 3")
     {
-        func = 0;
-        posfix = *infix_to_posfix(&posfix, "(6/2)", &func);
-        ASSERT_EQUALS_FLOAT(eval_posfix(posfix, &func), 3);
+        posfix = *infix_to_posfix(&posfix, "(6/2)");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 3);
     }
 
     TEST("(1. + .1) deve retornar 1.1")
     {
-        func = 0;
-        posfix = *infix_to_posfix(&posfix, "(1. + .1)", &func);
-        ASSERT_EQUALS_FLOAT(eval_posfix(posfix, &func), 1.1);
+        posfix = *infix_to_posfix(&posfix, "(1. + .1)");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 1.1);
     }
 
     TEST("(.1 + .1) deve retornar 0.2")
     {
-        func = 0;
-        posfix = *infix_to_posfix(&posfix, "(.1 + .1)", &func);
-        ASSERT_EQUALS_FLOAT(eval_posfix(posfix, &func), 0.2);
+        posfix = *infix_to_posfix(&posfix, "(.1 + .1)");
+        ASSERT_EQUALS_FLOAT(eval_posfix(posfix), 0.2);
     }
 }
 END_TEST()
@@ -388,29 +367,25 @@ START_TEST("Posfix para Posfix")
 {
     Lista retorno;
     Lista esperado;
-    int func = 0;
 
     TEST("'1 1 +' deve retornar e(1), e(1), e('+')")
     {
-        func = 0;
-        retorno = *posfix_to_posfix(&retorno, "1 1 +", &func);
-        esperado = *infix_to_posfix(&esperado, "(1+1)", &func);
+        retorno = *posfix_to_posfix(&retorno, "1 1 +");
+        esperado = *infix_to_posfix(&esperado, "(1+1)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("'1 1+' deve retornar e(1), e(1), e(+)")
     {
-        func = 0;
-        retorno = *posfix_to_posfix(&retorno, "1 1+", &func);
-        esperado = *infix_to_posfix(&esperado, "(1+1)", &func);
+        retorno = *posfix_to_posfix(&retorno, "1 1+");
+        esperado = *infix_to_posfix(&esperado, "(1+1)");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 
     TEST("'    2    1    1+-' deve retornar e(2), e(1), e(1), e(+), e(-)")
     {
-        func = 0;
-        retorno = *posfix_to_posfix(&retorno, "     2    1    1+-", &func); 
-        esperado = *infix_to_posfix(&esperado, "(2-(1+1))", &func);
+        retorno = *posfix_to_posfix(&retorno, "     2    1    1+-"); 
+        esperado = *infix_to_posfix(&esperado, "(2-(1+1))");
         ASSERT(comparar_lista(retorno, esperado) == 1);
     }
 

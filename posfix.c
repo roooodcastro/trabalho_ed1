@@ -8,13 +8,6 @@ float stof(char *text)
     return valor;
 }
 
-char* rtrim(char *s)
-{
-    char* back = s + strlen(s);
-    while(isspace(*--back));
-    *(back+1) = '\0';
-    return s;
-}
 
 
 int isValidInfix(Lista *l){
@@ -68,14 +61,16 @@ int isValidPosfix(Lista *l){
     for (i = 0; i <= l->topo; i++){
         if (l->elementos[i].tipo == 'N')
             nCount++;
-        else
+        else{
             opCount++;
-            if (l->elementos[i].tipo == '(' || l->elementos[i].tipo == ')')
-                return 7;
+            if (opCount != nCount - 1){
+                return 8;
+            }
+        }
+        if (l->elementos[i].tipo == '(' || l->elementos[i].tipo == ')')
+            return 7;
     }
-    if (opCount == nCount - 1)
-        return 0;
-    return 8;
+    return 0;
 }
 
 int isValid(char* exp)
@@ -93,19 +88,7 @@ int isValid(char* exp)
         func = isValidPosfix(&l);
     }
 
-    /* Aparentemente, esta parte só serve para tratar notação posfixa */
-    if (func != 0)
-        return func;
-    
-    convert( &l, exp, &func );
-    if (func != 0)
-        return func;
-
-    eval_posfix(l, &func);
-    /* Mas como é uma segurança a mais para a outra, resolvi deixar para as duas */
-
     return func;
-   
 }
 
 void toStringPosfixExpression(char* str, char* exp)
@@ -113,11 +96,10 @@ void toStringPosfixExpression(char* str, char* exp)
 	int i;
 	Lista l;
 	char buffer[255];
-	int func = 0;
 
 	sprintf(str, "");
 	
-	convert(&l, exp, &func);
+	convert(&l, exp);
 
 	for(i = 0; i <= l.topo; i++)
 	{
@@ -130,7 +112,7 @@ void toStringPosfixExpression(char* str, char* exp)
 	}
 }
 
-Lista* infix_to_posfix(Lista *l, char *infixa, int *func)
+Lista* infix_to_posfix(Lista *l, char *infixa)
 {
 	int i = 0;
     char aux[255];
@@ -147,27 +129,18 @@ Lista* infix_to_posfix(Lista *l, char *infixa, int *func)
 	    else {
             Elemento e;	  
             if (strlen(aux)){
-				if (push(l, *numero(&e, stof(aux))) == 0){
-					*func = 1;
-				}
+				push(l, *numero(&e, stof(aux)));
                 sprintf(aux, "");
             }
-			if (operador(&e, infixa[i])){ 
-				if (push(&pilha, e) == 0)
-					*func = 1;
-			}
-			else if (infixa[i] == ')'){
-				if (pop(&pilha, &e) == 1)
-					append(l, e);
-				else
-					*func = 2;
+			if (operador(&e, infixa[i])) 
+				push(&pilha, e);
+			else if (infixa[i] == ')' && (pop(&pilha, &e) == 1)){
+				append(l, e);
 			}
 	    }
 
 	    i++;
 	} while (infixa[i-1] != '\0');
-	if (pilha.topo > -1)
-		*func = 7;
     return l;
 }
 
@@ -187,19 +160,19 @@ Lista* infix_to_infix(Lista *l, char *infixa, int *func)
             Elemento e;	  
             if (strlen(aux)){
 				if (push(l, *numero(&e, stof(aux))) == 0){
-					*func = 1;
+					*func = 9;
 				}
                 sprintf(aux, "");
             }
 			if (operador(&e, infixa[i])){ 
 				if (push(l, e) == 0)
-					*func = 1;
+					*func = 9;
 			}
 			else if (infixa[i] == '(' || infixa[i] == ')'){
 				Elemento e;
 				e.tipo = infixa[i];
 				if (push(l, e) == 0)
-					*func = 1;
+					*func = 9;
 			}
 	    }
 
@@ -209,7 +182,7 @@ Lista* infix_to_infix(Lista *l, char *infixa, int *func)
     return l;
 }
 
-Lista* posfix_to_posfix(Lista *l, char *posfixa, int* func)
+Lista* posfix_to_posfix(Lista *l, char *posfixa)
 {
 	int i = 0;
     char aux[255];
@@ -224,9 +197,7 @@ Lista* posfix_to_posfix(Lista *l, char *posfixa, int* func)
 	    else {
             Elemento e;	  
             if (strlen(aux)){
-				if (push(l, *numero(&e, stof(aux))) == 0){
-					*func = 1;
-				}
+				push(l, *numero(&e, stof(aux)));
                 sprintf(aux, "");
             }
             if (operador(&e, posfixa[i])) 
@@ -237,16 +208,16 @@ Lista* posfix_to_posfix(Lista *l, char *posfixa, int* func)
     return l;
 }
 
-Lista* convert(Lista *l, char* exp, int *func)
+Lista* convert(Lista *l, char* exp)
 {
 	if ( IS_OPERADOR(exp[strlen(exp)-1]) )
-		return posfix_to_posfix(l, exp, func);
+		return posfix_to_posfix(l, exp);
 	else
-		return infix_to_posfix(l, exp, func);
+		return infix_to_posfix(l, exp);
 }
 
 
-float eval_posfix(Lista l, int* func)
+float eval_posfix(Lista l)
 {
 	int i = 0;
 
@@ -256,19 +227,11 @@ float eval_posfix(Lista l, int* func)
     for (i = 0; i <= l.topo; i++){
         Elemento e;
 		if (l.elementos[i].tipo == 'N'){
-			if (push(&pilha, l.elementos[i]) == 0){
-				*func = 3;
-			}
+			push(&pilha, l.elementos[i]);
 		}else{
-			if (pilha.topo < 1)
-				*func = 4;
-			if (pilha.topo >= 999)
-				*func = 5;
             pushv(&pilha, l.elementos[i].operador(popv(&pilha), popv(&pilha)));
 		}
     } 
-	if (pilha.topo == -1)
-		*func = 6;
     return popv(&pilha);
 }
 
