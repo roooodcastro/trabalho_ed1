@@ -9,7 +9,6 @@ float stof(char *text)
 }
 
 
-
 int isValidInfix(Lista *l){
     Lista t1, t2;
     Lista *T[2] = {&t1, &t2};
@@ -61,11 +60,10 @@ int isValidPosfix(Lista *l){
     for (i = 0; i <= l->topo; i++){
         if (l->elementos[i].tipo == 'N')
             nCount++;
-        else{
+        else {
             opCount++;
-            if (opCount != nCount - 1){
+            if (opCount != nCount - 1)
                 return 8;
-            }
         }
         if (l->elementos[i].tipo == '(' || l->elementos[i].tipo == ')')
             return 7;
@@ -84,9 +82,8 @@ int isValid(char* exp)
     
     if (!IS_OPERADOR(l.elementos[l.topo].tipo))    
         func = isValidInfix(&l); 
-    else{
+    else
         func = isValidPosfix(&l);
-    }
 
     return func;
 }
@@ -107,7 +104,6 @@ void toStringPosfixExpression(char* str, char* exp)
 			sprintf(buffer, "%s%.1f ", str, l.elementos[i].numero);
 		else
 			sprintf(buffer, "%s%c", str, l.elementos[i].tipo);
-
 		strcpy(str, buffer);
 	}
 }
