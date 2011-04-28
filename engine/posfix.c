@@ -55,19 +55,22 @@ int isValidInfix(Lista *l){
 }
 
 int isValidPosfix(Lista *l){
-    int i;
-    int nCount = 0; int opCount = 0;
+	int i = 0;
+
+    int num = 0;
     for (i = 0; i <= l->tamanho; i++){
-        if (l->elementos[i].tipo == 'N')
-            nCount++;
-        else {
-            opCount++;
-            if (opCount != nCount - 1)
-                return 8;
-        }
         if (l->elementos[i].tipo == '(' || l->elementos[i].tipo == ')')
-            return 7;
-    }
+            return 7;		
+        if (l->elementos[i].tipo == 'N'){
+            num++;
+		}else{ 
+            if (num < 2)
+                return 7;
+            num--;            
+		}
+    } 
+    if (num != 1)
+        return 8;
     return 0;
 }
 

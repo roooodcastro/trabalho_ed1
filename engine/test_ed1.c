@@ -398,7 +398,7 @@ START_TEST("Is Valid")
     ASSERT(isValid("1") == 0);
 
     TEST("'+' não é valido")
-    ASSERT(isValid("+") == 8);
+    ASSERT(isValid("+") != 0);
 
     TEST("'(' não é valido")
     ASSERT(isValid("(") == 1);
@@ -519,6 +519,33 @@ START_TEST("Is Valid")
 
     TEST("'(. + 1)' não é válido")
     ASSERT(isValid("(. + 1)") != 0);
+
+    TEST("'3 4 5 * +' é válido")
+    ASSERT(isValid("3 4 5 * +") == 0);
+
+    TEST("'3 4 5 * + 7 5 - *' é válido")
+    ASSERT(isValid("3 4 5 * + 7 5 - *") == 0);
+
+    TEST("'3 4 5 * + 7 5 -' não é válido")
+    ASSERT(isValid("3 4 5 * + 7 5 -") != 0);
+
+    TEST("'3 4 5 6 * + - +' não é válido")
+    ASSERT(isValid("3 4 5 6 * + - +") != 0);
+
+    TEST("'+ 4 5 6 *' não é válido")
+    ASSERT(isValid("+ 4 5 6 *") != 0);
+
+    TEST("'1 ( *' não é válido")
+    ASSERT(isValid("1 ( *") != 0);
+
+    TEST("'1 ) *' não é válido")
+    ASSERT(isValid("1 ( *") != 0);
+    
+    TEST("'1 1 (' não é válido")
+    ASSERT(isValid("1 1 (") != 0);
+    
+    TEST("'1 1 ( 1 +' não é válido")
+    ASSERT(isValid("1 1 ( 1 +") != 0);
 
 
 }
