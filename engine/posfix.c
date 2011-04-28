@@ -106,7 +106,7 @@ void toStringPosfixExpression(char* str, char* exp)
 		if (l.elementos[i].tipo == 'N')
 			sprintf(buffer, "%s%.1f ", str, l.elementos[i].numero);
 		else
-			sprintf(buffer, "%s%c", str, l.elementos[i].tipo);
+			sprintf(buffer, "%s%c ", str, l.elementos[i].tipo);
 
 		strcpy(str, buffer);
 	}
