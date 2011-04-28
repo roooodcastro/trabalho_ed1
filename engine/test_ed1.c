@@ -18,9 +18,9 @@ int comparar_elemento(Elemento ret, Elemento esp){
 
 int comparar_lista(Lista retorno, Lista esperado){
     int i = 0;
-    if (retorno.topo != esperado.topo)
+    if (retorno.tamanho != esperado.tamanho)
         return 0;
-    for (i = 0; i<=retorno.topo; i++){
+    for (i = 0; i<=retorno.tamanho; i++){
         if (!comparar_elemento(retorno.elementos[i], esperado.elementos[i])) 
             return 0;
         
@@ -98,13 +98,13 @@ START_TEST("Lista e Pilha")
     {
         Lista l;
         construir_lista(&l);
-        ASSERT(l.topo == -1);
+        ASSERT(l.tamanho == -1);
     }
 
     TEST("Push e Pop");
     {
         Pilha p; 
-        construir_lista(&p);
+        construir_pilha(&p);
         int passa = 1;
         int i = 0;
 
@@ -137,7 +137,7 @@ START_TEST("Lista e Pilha")
         TEST("Adicionar 1000 elementos a lista");
         passa = 1;
         for (i = 1; i <= 1000; i++){
-            passa &= (add(&l, *numero(&e, i), -1) == 1) && (l.topo == i-1) && (l.elementos[i-1].numero == i);
+            passa &= (add(&l, *numero(&e, i), -1) == 1) && (l.tamanho == i-1) && (l.elementos[i-1].numero == i);
         }       
         ASSERT(passa == 1);
        
@@ -150,10 +150,10 @@ START_TEST("Lista e Pilha")
         int posicoes[] = {-1, -1, 0, 0, 1, 4, 6};
         passa = 1;
         for (i = 0; i < 7; i++){
-            passa &= (add(&l, *numero(&e, i+1), posicoes[i]) == 1) && (l.topo == i);
+            passa &= (add(&l, *numero(&e, i+1), posicoes[i]) == 1) && (l.tamanho == i);
         }        
         ASSERT(passa == 1);
-        ASSERT(l.topo == 6);
+        ASSERT(l.tamanho == 6);
         ASSERT(l.elementos[0].numero == 4);
         ASSERT(l.elementos[1].numero == 5);
         ASSERT(l.elementos[2].numero == 3);
@@ -164,11 +164,11 @@ START_TEST("Lista e Pilha")
 
         TEST("Append elemento 8 na posicao 8 da lista deve falhar")
         ASSERT(add(&l, *numero(&e, 8), 8) == 0);
-        ASSERT(l.topo == 6);
+        ASSERT(l.tamanho == 6);
         
         TEST("Append elemento 9 na posicao -2 da lista deve falhar")
         ASSERT(add(&l, *numero(&e, 9), -2) == 0);
-        ASSERT(l.topo == 6);
+        ASSERT(l.tamanho == 6);
     }
 }
 END_TEST()
@@ -480,6 +480,46 @@ START_TEST("Is Valid")
 
     TEST("'1 ( 1 1 +' não é valido")
     ASSERT(isValid("1 ( 1 1 +") != 0);
+
+    TEST("'.1 1. +' não é válido")
+    ASSERT(isValid(".1 1. +") != 0);
+   
+    TEST("'1..1' não é válido")
+    ASSERT(isValid("1..1") != 0);
+   
+    TEST("'1...1' não é válido")
+    ASSERT(isValid("1...1") != 0);
+
+    TEST("'1.1' é válido")
+    ASSERT(isValid("1.1") == 0);
+
+    TEST("'(1.+(1 + 1))' não é válido")
+    ASSERT(isValid("(1.+(1 + 1))") != 0);
+    
+    TEST("'(1.(1 + 1))' não é válido")
+    ASSERT(isValid("(1.(1 + 1))") != 0);
+
+    TEST("'(1 + 1.)' não é válido")
+    ASSERT(isValid("(1 + 1.)") != 0);
+   
+    TEST("'(1 + 1.1.1)' não é válido")
+    ASSERT(isValid("(1 + 1.1.1)") != 0);
+   
+    TEST("'(1 + .1)' não é válido")
+    ASSERT(isValid("(1 + .1)") != 0);
+   
+    TEST("'(1 + 1).1' não é válido")
+    ASSERT(isValid("(1 + 1).1") != 0);
+
+    TEST("'(1 + 1).' não é válido")
+    ASSERT(isValid("(1 + 1).") != 0);
+
+    TEST("'(.1 + 1)' não é válido")
+    ASSERT(isValid("(.1 + 1)") != 0);
+
+    TEST("'(. + 1)' não é válido")
+    ASSERT(isValid("(. + 1)") != 0);
+
 
 }
 END_TEST()
