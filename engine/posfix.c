@@ -157,13 +157,6 @@ Lista* infix_to_posfix(Lista *l, char *infixa)
     return l;
 }
 
-Lista* posfix_to_infix(Lista* l, char* posfixa)
-{
-	int i = 0;
-	char aux[255];
-	Pilha pilha;
-}
-
 Lista* infix_to_infix(Lista *l, char *infixa, int *func)
 {
 	int i = 0;
