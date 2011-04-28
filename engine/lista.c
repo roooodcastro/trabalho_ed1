@@ -2,7 +2,7 @@
 
 void construir_lista(Lista *l)
 {
-    l->ultimo = -1;
+    l->tamanho = -1;
 }
 
 void construir_pilha(Pilha *p)
@@ -36,16 +36,16 @@ int append(Lista *l, Elemento e)
 
 int add(Lista *l, Elemento e, int pos){
     int i;
-    if (pos > l->ultimo+1 || pos > 999 || pos < -1 || l->ultimo == 999)
+    if (pos > l->tamanho+1 || pos > 999 || pos < -1 || l->tamanho == 999)
         return 0;
     if (pos == -1)
-        l->elementos[++(l->ultimo)] = e;
+        l->elementos[++(l->tamanho)] = e;
     else {
-        for (i = l->ultimo; i >= pos; i--){
+        for (i = l->tamanho; i >= pos; i--){
             l->elementos[i + 1] = l->elementos[i];
         }
         l->elementos[pos] = e;
-        l->ultimo++;
+        l->tamanho++;
     }
     return 1;    
 }

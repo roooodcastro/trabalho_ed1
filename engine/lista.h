@@ -4,7 +4,7 @@
 
 typedef struct{
     Elemento elementos[1000];
-    int ultimo;
+    int tamanho;
 } Lista;
 
 typedef struct{
